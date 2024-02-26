@@ -1,8 +1,10 @@
 package com.syllab.boutique.metier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 public class PanierTest {
   // Initialisation
@@ -66,7 +68,9 @@ public class PanierTest {
     var p1 = new Produit("P1", "L1", 2);
     var panier = new Panier();
 
-    panier.ajouter(p1, 0);
+    Executable act = () -> panier.ajouter(p1, 0);
+  
+    assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
@@ -74,14 +78,18 @@ public class PanierTest {
     var p1 = new Produit("P1", "L1", 2);
     var panier = new Panier();
 
-    panier.ajouter(p1, -3);
+    Executable act = () -> panier.ajouter(p1, -3);
+
+    assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void ajouter_produitNull_leveNullPointerException() {
     var panier = new Panier();
 
-    panier.ajouter(null, 2);
+    Executable act = () -> panier.ajouter(null, 2);
+
+    assertThrows(NullPointerException.class, act);
   }
 
   // Diminuer
@@ -137,6 +145,8 @@ public class PanierTest {
 
     panier.ajouter(p1, 3);
 
-    panier.diminuer(p2);
+    Executable act = () -> panier.diminuer(p2);
+
+    assertThrows(IllegalArgumentException.class, act);
   }
 }

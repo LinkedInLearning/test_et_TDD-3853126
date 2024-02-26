@@ -1,8 +1,10 @@
 package com.syllab.boutique.metier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 public class ProduitTest {
   @Test
@@ -16,32 +18,38 @@ public class ProduitTest {
 
   @Test
   void initialisation_prix0_leveIllegalArgumentException() {
-    new Produit("REF", "LIB", 0);
+    Executable act = () -> new Produit("REF", "LIB", 0);
+    assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void initialisation_prixNegatif_leveIllegalArgumentException() {
-    new Produit("REF", "LIB", -2.30);
+    Executable act = () -> new Produit("REF", "LIB", -2.30);
+    assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void initialisation_referenceVide_leveIllegalArgumentException() {
-    new Produit("", "LIB", 2.30);
+    Executable act = () -> new Produit("", "LIB", 2.30);
+    assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void initialisation_referenceNull_leveNullPointerException() {
-    new Produit(null, "LIB", 2.30);
+    Executable act = () -> new Produit(null, "LIB", 2.30);
+    assertThrows(NullPointerException.class, act);
   }
 
   @Test
   void initialisation_libelleVide_leveIllegalArgumentException() {
-    new Produit("REF", "", 2.30);
+    Executable act = () -> new Produit("REF", "", 2.30);
+    assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void initialisation_libelleNull_leveNullPointerException() {
-    new Produit("REF", null, 2.30);
+    Executable act = () -> new Produit("REF", null, 2.30);
+    assertThrows(NullPointerException.class, act);
   }
 
   @Test
