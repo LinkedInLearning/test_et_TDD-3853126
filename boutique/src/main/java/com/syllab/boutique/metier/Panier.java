@@ -27,6 +27,12 @@ public class Panier {
    *                                     ou nulle)
    */
   public Ligne ajouter(Produit produit, int quantite) {
+    if (produit == null) {
+      throw new NullPointerException("Le produit doit être non nul.");
+    }
+    if (quantite <= 0) {
+      throw new IllegalArgumentException("La quantité doit être positive.");
+    }
     var ligne = this.lignes.get(produit);
 
     if (ligne == null) {
