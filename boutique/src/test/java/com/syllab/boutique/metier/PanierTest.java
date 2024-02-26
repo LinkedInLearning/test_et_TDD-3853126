@@ -1,7 +1,9 @@
 package com.syllab.boutique.metier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -13,9 +15,9 @@ public class PanierTest {
   void initialisation_panierVide() {
     var p = new Panier();
 
-    assertEquals(true, p.estVide());
-    assertEquals(0, p.getPrixTotal());
-    assertEquals(false, p.getLignes().iterator().hasNext());
+    assertTrue(p.estVide());
+    assertEquals(0, p.getPrixTotal(), 0.0001);
+    assertFalse(p.getLignes().iterator().hasNext());
   }
   // - Extrême (aucun)
   // - Erreur (aucun)
@@ -32,8 +34,8 @@ public class PanierTest {
     panier.ajouter(p, 3);
 
     // Assertion
-    assertEquals(6, panier.getPrixTotal());
-    assertEquals(false, panier.estVide());
+    assertEquals(6, panier.getPrixTotal(), 0.0001);
+    assertFalse(panier.estVide());
   }
 
   @Test
@@ -45,8 +47,8 @@ public class PanierTest {
     panier.ajouter(p1, 3);
     panier.ajouter(p2, 1);
 
-    assertEquals(11, panier.getPrixTotal());
-    assertEquals(false, panier.estVide());
+    assertEquals(11, panier.getPrixTotal(), 0.0001);
+    assertFalse(panier.estVide());
   }
 
   @Test
@@ -57,8 +59,8 @@ public class PanierTest {
     panier.ajouter(p1, 3);
     panier.ajouter(p1, 1);
 
-    assertEquals(8, panier.getPrixTotal());
-    assertEquals(false, panier.estVide());
+    assertEquals(8, panier.getPrixTotal(), 0.0001);
+    assertFalse(panier.estVide());
   }
 
   // - Extreme (aucun)
@@ -69,7 +71,7 @@ public class PanierTest {
     var panier = new Panier();
 
     Executable act = () -> panier.ajouter(p1, 0);
-  
+
     assertThrows(IllegalArgumentException.class, act);
   }
 
@@ -103,8 +105,8 @@ public class PanierTest {
 
     panier.diminuer(p);
 
-    assertEquals(4, panier.getPrixTotal());
-    assertEquals(false, panier.estVide());
+    assertEquals(4, panier.getPrixTotal(), 0.0001);
+    assertFalse(panier.estVide());
   }
 
   // - Extreme
@@ -117,8 +119,8 @@ public class PanierTest {
 
     panier.diminuer(p);
 
-    assertEquals(0, panier.getPrixTotal());
-    assertEquals(true, panier.estVide());
+    assertEquals(0, panier.getPrixTotal(), 0.0001);
+    assertTrue(panier.estVide());
   }
 
   @Test
@@ -132,8 +134,8 @@ public class PanierTest {
 
     panier.diminuer(p2);
 
-    assertEquals(6, panier.getPrixTotal());
-    assertEquals(false, panier.estVide());
+    assertEquals(6, panier.getPrixTotal(), 0.0001);
+    assertFalse(panier.estVide());
   }
 
   // - Erreur
