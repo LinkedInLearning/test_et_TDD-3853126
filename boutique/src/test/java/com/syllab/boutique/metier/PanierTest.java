@@ -164,7 +164,7 @@ public class PanierTest {
 
     panier.ajouter(new Produit("P1", "L1", 30), 2);
 
-    panier.appliquerReduction("5POUR50");
+    panier.appliquerReduction(Panier.REDUC_CODE);
 
     assertEquals(55, panier.getPrixTotal(), 0.0001);
   }
@@ -186,7 +186,7 @@ public class PanierTest {
 
     panier.ajouter(new Produit("P1", "L1", 30), 1);
 
-    panier.appliquerReduction("5POUR50");
+    panier.appliquerReduction(Panier.REDUC_CODE);
 
     assertEquals(30, panier.getPrixTotal(), 0.0001);
   }

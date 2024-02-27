@@ -8,10 +8,18 @@ import java.util.Map;
  */
 public class Panier {
   private double reduc = 0;
+  public final static String REDUC_CODE = "5POUR50";
+  public final static double REDUC_MONTANT = 5;
+  public final static double REDUC_SEUIL = 50;
 
+  /**
+   * Applique un coupon de réduction à la commande.
+   * 
+   * @param coupon Code du coupon.
+   */
   public void appliquerReduction(String coupon) {
-    if(coupon.equals("5POUR50"))
-      this.reduc = 5;
+    if(coupon.equals(REDUC_CODE))
+      this.reduc = REDUC_MONTANT;
   }
 
   /**
@@ -78,7 +86,7 @@ public class Panier {
     var total = this.lignes.values().stream()
         .mapToDouble(l -> l.getPrixTotal())
         .sum();
-    return total >= 50 ? total-this.reduc : total;
+    return total - (total >= REDUC_SEUIL ? this.reduc : 0);
   }
 
   /**
