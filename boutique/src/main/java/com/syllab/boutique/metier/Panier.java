@@ -8,6 +8,7 @@ import java.util.Map;
  */
 public class Panier {
   private double reduc = 0;
+  private boolean px3plus1 = false;
   public final static String REDUC_CODE = "5POUR50";
   public final static double REDUC_MONTANT = 5;
   public final static double REDUC_SEUIL = 50;
@@ -20,6 +21,14 @@ public class Panier {
   public void appliquerReduction(String coupon) {
     if(coupon.equals(REDUC_CODE))
       this.reduc = REDUC_MONTANT;
+    else if (coupon.equals("PX3+1")) {
+      this.px3plus1 = true;
+      for (var l : this.getLignes()) {
+        if ("PX".equals(l.getProduit().getReference())) {
+          l.setProduitOffertQte(4);
+        }
+      }
+    }
   }
 
   /**
@@ -52,6 +61,9 @@ public class Panier {
 
     if (ligne == null) {
       ligne = new Ligne(produit, quantite);
+      if (this.px3plus1 && produit.getReference().equals("PX")) {
+        ligne.setProduitOffertQte(4);
+      }
       this.lignes.put(produit, ligne);
     } else {
       ligne.quantite += quantite;
@@ -139,7 +151,9 @@ public class Panier {
      *         quantité.
      */
     public double getPrixTotal() {
-      return this.produit.getPrix() * this.quantite;
+      int offerts = this.offertQte == 0 ? 0 : this.quantite / this.offertQte;
+
+      return this.produit.getPrix() * (this.quantite-offerts);
     }
 
     /**
@@ -166,6 +180,12 @@ public class Panier {
           this.produit.getReference(),
           this.quantite).hashCode();
     }
+    
+    private void setProduitOffertQte(int qte) {
+      this.offertQte = qte;
+    }
+
+    private int offertQte = 0;
 
     private Produit produit;
     private int quantite;

@@ -218,7 +218,7 @@ public class PanierTest {
     assertEquals(60, ligne.getPrixTotal(), 0.0001);
     assertEquals(55, panier.getPrixTotal(), 0.0001);
   }
-/*   
+ 
   @Test
   void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
     var panier = new Panier();
@@ -246,5 +246,5 @@ public class PanierTest {
     assertEquals(60, ligne.getPrixTotal(), 0.0001);
     assertEquals(60 + 4, panier.getPrixTotal(), 0.0001);
   }
-*/
+
 }
