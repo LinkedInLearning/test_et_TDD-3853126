@@ -190,4 +190,61 @@ public class PanierTest {
 
     assertEquals(30, panier.getPrixTotal(), 0.0001);
   }
+
+  @Test
+  void appliquerReduction_PX3Plus1Avec4PX_1PXOffert() {
+    var panier = new Panier();
+    var ligne = panier.ajouter(new Produit("PX", "LX", 20), 4);
+    
+    panier.ajouter(new Produit("P2", "L2", 1), 4);
+
+    panier.appliquerReduction("PX3+1");
+
+    assertEquals(4, ligne.getQuantite());
+    assertEquals(60, ligne.getPrixTotal() , 0.0001);
+    assertEquals(60+4, panier.getPrixTotal(), 0.0001);
+  }
+
+  @Test
+  void appliquerReduction_PX3Plus1Et5Pour50Total60_PXOffertEtTotal55() {
+    var panier = new Panier();
+
+    var ligne = panier.ajouter(new Produit("PX", "LX", 20), 4);
+    
+    panier.appliquerReduction(Panier.REDUC_CODE);
+    panier.appliquerReduction("PX3+1");
+
+    assertEquals(4, ligne.getQuantite());
+    assertEquals(60, ligne.getPrixTotal(), 0.0001);
+    assertEquals(55, panier.getPrixTotal(), 0.0001);
+  }
+/*   
+  @Test
+  void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
+    var panier = new Panier();
+
+    panier.ajouter(new Produit("P2", "L2", 1), 4);
+    panier.appliquerReduction("PX3+1");
+
+    var ligne = panier.ajouter(new Produit("PX", "LX", 20), 9);
+
+    assertEquals(9, ligne.getQuantite());
+    assertEquals(140, ligne.getPrixTotal(), 0.0001);
+    assertEquals(140 + 4, panier.getPrixTotal(), 0.0001);
+  }
+
+  @Test
+  void appliquerReduction_PX3Plus1Avec3PX_PasDePXOffert() {
+    var panier = new Panier();
+    var ligne = panier.ajouter(new Produit("PX", "LX", 20), 3);
+
+    panier.ajouter(new Produit("P2", "L2", 1), 4);
+
+    panier.appliquerReduction("PX3+1");
+
+    assertEquals(3, ligne.getQuantite());
+    assertEquals(60, ligne.getPrixTotal(), 0.0001);
+    assertEquals(60 + 4, panier.getPrixTotal(), 0.0001);
+  }
+*/
 }
