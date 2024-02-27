@@ -168,4 +168,26 @@ public class PanierTest {
 
     assertEquals(55, panier.getPrixTotal(), 0.0001);
   }
+  
+  @Test
+  void appliquerReduction_Total60CouponNonValide_Total60() {
+    var panier = new Panier();
+
+    panier.ajouter(new Produit("P1", "L1", 30), 2);
+
+    panier.appliquerReduction("INVALIDE");
+
+    assertEquals(60, panier.getPrixTotal(), 0.0001);
+  }
+
+  @Test
+  void appliquerReduction_Total30Coupon5Pour50_Total30() {
+    var panier = new Panier();
+
+    panier.ajouter(new Produit("P1", "L1", 30), 1);
+
+    panier.appliquerReduction("5POUR50");
+
+    assertEquals(30, panier.getPrixTotal(), 0.0001);
+  }
 }
