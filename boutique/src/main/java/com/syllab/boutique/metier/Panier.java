@@ -7,6 +7,11 @@ import java.util.Map;
  * Représente un panier de site marchand.
  */
 public class Panier {
+
+  public void appliquerReduction(String string) {
+
+  }
+
   /**
    * Obtient les lignes du panier selon un ordre arbitraire.
    * 
@@ -156,4 +161,5 @@ public class Panier {
   }
 
   private Map<Produit, Ligne> lignes = new HashMap<>();
+
 }

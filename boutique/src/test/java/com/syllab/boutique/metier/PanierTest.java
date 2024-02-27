@@ -157,4 +157,15 @@ public class PanierTest {
 
     assertThrows(IllegalArgumentException.class, act);
   }
+
+  @Test
+  void appliquerReduction_Total60Coupon5Pour50_Total55() {
+    var panier = new Panier();
+
+    panier.ajouter(new Produit("P1", "L1", 30), 2);
+
+    panier.appliquerReduction("5POUR50");
+
+    assertEquals(55, panier.getPrixTotal(), 0.0001);
+  }
 }
