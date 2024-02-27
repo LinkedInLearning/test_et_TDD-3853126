@@ -7,9 +7,10 @@ import java.util.Map;
  * Représente un panier de site marchand.
  */
 public class Panier {
+  private double reduc = 0;
 
   public void appliquerReduction(String string) {
-
+    this.reduc = 5;
   }
 
   /**
@@ -75,7 +76,7 @@ public class Panier {
   public double getPrixTotal() {
     return this.lignes.values().stream()
         .mapToDouble(l -> l.getPrixTotal())
-        .sum();
+        .sum() - this.reduc;
   }
 
   /**
