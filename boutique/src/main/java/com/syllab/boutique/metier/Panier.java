@@ -7,26 +7,32 @@ import java.util.Map;
  * Représente un panier de site marchand.
  */
 public class Panier {
-  private double reduc = 0;
-  private boolean px3plus1 = false;
   public final static String REDUC_CODE = "5POUR50";
   public final static double REDUC_MONTANT = 5;
   public final static double REDUC_SEUIL = 50;
 
+  public final static String OFFERT_CODE = "PX3+1";
+  public final static String OFFERT_REF = "PX";
+  public final static int    OFFERT_QTE = 4;
+
+  private static void appliquerPX3plus1(Ligne l) {
+    if (OFFERT_REF.equals(l.getProduit().getReference())) {
+      l.setProduitOffertQte(OFFERT_QTE);
+    }
+  } 
+  
   /**
    * Applique un coupon de réduction à la commande.
    * 
    * @param coupon Code du coupon.
    */
   public void appliquerReduction(String coupon) {
-    if(coupon.equals(REDUC_CODE))
+    if (coupon.equals(REDUC_CODE))
       this.reduc = REDUC_MONTANT;
-    else if (coupon.equals("PX3+1")) {
+    else if (coupon.equals(OFFERT_CODE)) {
       this.px3plus1 = true;
       for (var l : this.getLignes()) {
-        if ("PX".equals(l.getProduit().getReference())) {
-          l.setProduitOffertQte(4);
-        }
+        appliquerPX3plus1(l);
       }
     }
   }
@@ -61,8 +67,8 @@ public class Panier {
 
     if (ligne == null) {
       ligne = new Ligne(produit, quantite);
-      if (this.px3plus1 && produit.getReference().equals("PX")) {
-        ligne.setProduitOffertQte(4);
+      if (this.px3plus1) {
+        appliquerPX3plus1(ligne);
       }
       this.lignes.put(produit, ligne);
     } else {
@@ -153,7 +159,7 @@ public class Panier {
     public double getPrixTotal() {
       int offerts = this.offertQte == 0 ? 0 : this.quantite / this.offertQte;
 
-      return this.produit.getPrix() * (this.quantite-offerts);
+      return this.produit.getPrix() * (this.quantite - offerts);
     }
 
     /**
@@ -180,7 +186,7 @@ public class Panier {
           this.produit.getReference(),
           this.quantite).hashCode();
     }
-    
+
     private void setProduitOffertQte(int qte) {
       this.offertQte = qte;
     }
@@ -192,5 +198,6 @@ public class Panier {
   }
 
   private Map<Produit, Ligne> lignes = new HashMap<>();
-
+  private double reduc = 0;
+  private boolean px3plus1 = false;
 }
