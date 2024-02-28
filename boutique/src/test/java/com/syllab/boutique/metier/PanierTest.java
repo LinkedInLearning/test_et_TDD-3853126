@@ -56,7 +56,7 @@ public class PanierTest {
   }
 
   @Test
-  void ajouter_1Produit2fois_AdditionneLesQuantites() {
+  void ajouter_1Produit2Fois_AdditionneLesQuantites() {
     var p1 = new Produit("P1", "L1", 2);
     var panier = new Panier();
     var l = panier.new Ligne(p1, 4);
