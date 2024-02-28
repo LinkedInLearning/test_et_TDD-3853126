@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -145,6 +146,7 @@ public class PanierTest {
 
   // - Extreme
   @Test
+  @Tag("extreme")
   void diminuer_dernierProduitEnQuantite1_panierVide() {
     var p = ajouterProduit("P1", 2, 1).getProduit();
 
@@ -155,6 +157,7 @@ public class PanierTest {
   }
 
   @Test
+  @Tag("extreme")
   void diminuer_avantDernierProduitEnQuantite1_retireLeProduit() {
     ajouterProduit("P1", 2, 3);
 
