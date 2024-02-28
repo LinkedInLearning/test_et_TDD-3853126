@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import com.syllab.boutique.NommageRoyOsherove;
+
+@DisplayNameGeneration(NommageRoyOsherove.class)
 public class ProduitTest {
   @Test
   void initialisation_produitUsuel() {
