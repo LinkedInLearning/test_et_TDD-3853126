@@ -11,8 +11,14 @@ public class ReducSeuil implements Reduc {
    * 
    * @param montant Montant de la réduction accordée
    * @param seuil   Seuil d'achat à partir duquel la réduction est appliquée.
+   * @exception IllegalArgumentException Montant négatif ou nul ou supérieur
+   *                                     ou égal au seuil
    */
   public ReducSeuil(double montant, double seuil) {
+    if (montant >= seuil || montant <= 0) {
+      throw new IllegalArgumentException(
+          "Le montant de la réduction doit être strictement positif et inférieur au seuil.");
+    }
     this.montant = montant;
     this.seuil = seuil;
   }

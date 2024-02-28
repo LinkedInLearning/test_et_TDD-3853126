@@ -10,15 +10,15 @@ public class ProduitOffert implements Reduc {
    * @param ref Référence du produit concerné par la réduction.
    * @param qte Quantité de produits commandés (produit offert compris) 
    */
-  public ProduitOffert(String ref, int qtePayante) {
+  public ProduitOffert(String ref, int qte) {
     if (ref.length() == 0) {
       throw new IllegalArgumentException("La référence doit être non vide");
     }
-    if (qtePayante <= 0) {
+    if (qte <= 0) {
       throw new IllegalArgumentException("La quantité doit être strictement positive");
     }
     this.ref = ref;
-    this.qte = qtePayante;
+    this.qte = qte;
   }
 
   @Override

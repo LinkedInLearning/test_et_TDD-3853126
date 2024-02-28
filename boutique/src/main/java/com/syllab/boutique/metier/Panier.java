@@ -18,8 +18,10 @@ public class Panier {
    * @param coupon Code du coupon.
    */
   public void appliquerReduction(String coupon) {
-    if (coupons.containsKey(coupon)) {
-      this.reducs.add(coupons.get(coupon));
+    var reduc = coupons.get(coupon);
+
+    if (reduc != null) {
+      this.reducs.add(reduc);
     }
   }
 
