@@ -43,12 +43,33 @@ public class PanierTest {
     panier = new Panier();
   }
 
+  Panier.Ligne ajouterProduit(String ref, double prix, int qte) {
+    return panier.ajouter(new Produit(ref, "L" + ref, prix), qte);
+  }
+
+  void assertPanierVide() {
+    assertTrue(panier.estVide());
+  }
+
+  void assertPanierNonVide() {
+    assertFalse(panier.estVide());
+  }
+
+  void assertPrixTotalPanier(double attendu) {
+    assertEquals(attendu, panier.getPrixTotal(), .0001);
+  }
+
+  void assertLignePanier(double attendu_prix, int attendue_qte, Panier.Ligne reelle) {
+    assertEquals(attendue_qte, reelle.getQuantite());
+    assertEquals(attendu_prix, reelle.getPrixTotal(), .0001);
+  }
+
   // Initialisation
   // - Usuel
   @Test
   void initialisation_panierVide() {
-    assertTrue(panier.estVide());
-    assertEquals(0, panier.getPrixTotal(), 0.0001);
+    assertPanierVide();
+    assertPrixTotalPanier(0);
     assertFalse(panier.getLignes().iterator().hasNext(), "Présence d'une ligne sur un nouveau panier");
   }
   // - Extrême (aucun)
@@ -58,67 +79,53 @@ public class PanierTest {
   // - Usuel
   @Test
   void ajouter_1Produit() {
-    // Arrange
-    var p = new Produit("AT12", "Ciment", 2);
+    ajouterProduit("AT12", 2, 3);
 
-    // Act
-    panier.ajouter(p, 3);
-
-    // Assertion
-    assertEquals(6, panier.getPrixTotal(), 0.0001);
-    assertFalse(panier.estVide());
+    assertPrixTotalPanier(6);
+    assertPanierNonVide();
   }
 
   @Test
   void ajouter_2ProduitsDifferents() {
-    var p1 = new Produit("P1", "L1", 2);
-    var p2 = new Produit("P2", "L2", 5);
-
-    var l1 = panier.ajouter(p1, 3);
-    var l2 = panier.ajouter(p2, 1);
+    var l1 = ajouterProduit("P1", 2, 3);
+    var l2 = ajouterProduit("P2", 5, 1);
 
     assertIterableEquals(Arrays.asList(l1, l2), panier.getLignes());
-    assertEquals(11, panier.getPrixTotal(), 0.0001);
-    assertFalse(panier.estVide());
+    assertPrixTotalPanier(11);
+    assertPanierNonVide();
   }
 
   @Test
   @DisplayName("(ajouter) 1 produit 2 fois -> additionne les quantités")
   void ajouter_1Produit2Fois_AdditionneLesQuantites() {
-    var p1 = new Produit("P1", "L1", 2);
-    var l = panier.new Ligne(p1, 4);
+    var p1 = ajouterProduit("P1", 2, 3).getProduit();
+    var attendue = panier.new Ligne(p1, 4);
 
-    panier.ajouter(p1, 3);
     panier.ajouter(p1, 1);
 
-    assertIterableEquals(Arrays.asList(l), panier.getLignes());
-    assertEquals(8, panier.getPrixTotal(), 0.0001);
-    assertFalse(panier.estVide());
+    assertIterableEquals(Arrays.asList(attendue), panier.getLignes());
+    assertPrixTotalPanier(8);
+    assertPanierNonVide();
   }
 
   // - Extreme (aucun)
   // - Erreur
   @Test
   void ajouter_quantite0_leveIllegalArgumentException() {
-    var p1 = new Produit("P1", "L1", 2);
-
-    Executable act = () -> panier.ajouter(p1, 0);
+    Executable act = () -> ajouterProduit("P1", 2, 0);
 
     assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void ajouter_quantiteNegative_leveIllegalArgumentException() {
-    var p1 = new Produit("P1", "L1", 2);
-
-    Executable act = () -> panier.ajouter(p1, -3);
+    Executable act = () -> ajouterProduit("P1", 2, -3);
 
     assertThrows(IllegalArgumentException.class, act);
   }
 
   @Test
   void ajouter_produitNull_leveNullPointerException() {
-
     Executable act = () -> panier.ajouter(null, 2);
 
     assertThrows(NullPointerException.class, act);
@@ -128,50 +135,43 @@ public class PanierTest {
   // - Usuel
   @Test
   void diminuer_produitEnQuantite2OuPlus() {
-    var p = new Produit("P1", "L1", 2);
-
-    panier.ajouter(p, 3);
+    var p = ajouterProduit("P1", 2, 3).getProduit();
 
     panier.diminuer(p);
 
-    assertEquals(4, panier.getPrixTotal(), 0.0001);
-    assertFalse(panier.estVide());
+    assertPrixTotalPanier(4);
+    assertPanierNonVide();
   }
 
   // - Extreme
   @Test
   void diminuer_dernierProduitEnQuantite1_panierVide() {
-    var p = new Produit("P1", "L1", 2);
-
-    panier.ajouter(p, 1);
+    var p = ajouterProduit("P1", 2, 1).getProduit();
 
     panier.diminuer(p);
 
-    assertEquals(0, panier.getPrixTotal(), 0.0001);
-    assertTrue(panier.estVide());
+    assertPrixTotalPanier(0);
+    assertPanierVide();
   }
 
   @Test
   void diminuer_avantDernierProduitEnQuantite1_retireLeProduit() {
-    var p1 = new Produit("P1", "L1", 2);
-    var p2 = new Produit("P2", "L2", 5);
+    ajouterProduit("P1", 2, 3);
 
-    panier.ajouter(p1, 3);
-    panier.ajouter(p2, 1);
+    var p2 = ajouterProduit("P2", 5, 1).getProduit();
 
     panier.diminuer(p2);
 
-    assertEquals(6, panier.getPrixTotal(), 0.0001);
-    assertFalse(panier.estVide());
+    assertPrixTotalPanier(6);
+    assertPanierNonVide();
   }
 
   // - Erreur
   @Test
   void diminuer_produitAbsentDuPanier_leveIllegalArgumentException() {
-    var p1 = new Produit("P1", "L1", 2);
     var p2 = new Produit("P2", "L2", 5);
 
-    panier.ajouter(p1, 3);
+    ajouterProduit("P1", 2, 5);
 
     Executable act = () -> panier.diminuer(p2);
 
@@ -180,84 +180,75 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_Total60Coupon5Pour50_Total55() {
-
-    panier.ajouter(new Produit("P1", "L1", 30), 2);
+    ajouterProduit("P1", 30, 2);
 
     panier.appliquerReduction(REDUC_CODE);
 
-    assertEquals(55, panier.getPrixTotal(), 0.0001);
+    assertPrixTotalPanier(55);
   }
 
   @Test
   void appliquerReduction_Total60CouponNonValide_Total60() {
-
-    panier.ajouter(new Produit("P1", "L1", 30), 2);
+    ajouterProduit("P1", 30, 2);
 
     panier.appliquerReduction("INVALIDE");
 
-    assertEquals(60, panier.getPrixTotal(), 0.0001);
+    assertPrixTotalPanier(60);
   }
 
   @Test
   void appliquerReduction_Total30Coupon5Pour50_Total30() {
 
-    panier.ajouter(new Produit("P1", "L1", 30), 1);
+    ajouterProduit("P1", 30, 1);
 
     panier.appliquerReduction(REDUC_CODE);
 
-    assertEquals(30, panier.getPrixTotal(), 0.0001);
+    assertPrixTotalPanier(30);
   }
 
   @Test
   void appliquerReduction_PX3Plus1Avec4PX_1PXOffert() {
-    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 4);
+    var ligne = ajouterProduit(OFFERT_REF, 20, 4);
 
-    panier.ajouter(new Produit("P2", "L2", 1), 4);
+    ajouterProduit("P2", 1, 4);
 
     panier.appliquerReduction(OFFERT_CODE);
 
-    assertEquals(4, ligne.getQuantite());
-    assertEquals(60, ligne.getPrixTotal(), 0.0001);
-    assertEquals(60 + 4, panier.getPrixTotal(), 0.0001);
+    assertLignePanier(60, 4, ligne);
+    assertPrixTotalPanier(60 + 4);
   }
 
   @Test
   void appliquerReduction_PX3Plus1Et5Pour50Total60_PXOffertEtTotal55() {
-
-    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 4);
+    var ligne = ajouterProduit(OFFERT_REF, 20, 4);
 
     panier.appliquerReduction(REDUC_CODE);
     panier.appliquerReduction(OFFERT_CODE);
 
-    assertEquals(4, ligne.getQuantite());
-    assertEquals(60, ligne.getPrixTotal(), 0.0001);
-    assertEquals(55, panier.getPrixTotal(), 0.0001);
+    assertLignePanier(60, 4, ligne);
+    assertPrixTotalPanier(55);
   }
 
   @Test
   void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
-
-    panier.ajouter(new Produit("P2", "L2", 1), 4);
+    ajouterProduit("P2", 1, 4);
     panier.appliquerReduction(OFFERT_CODE);
 
-    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 9);
+    var ligne = ajouterProduit(OFFERT_REF, 20, 9);
 
-    assertEquals(9, ligne.getQuantite());
-    assertEquals(140, ligne.getPrixTotal(), 0.0001);
-    assertEquals(140 + 4, panier.getPrixTotal(), 0.0001);
+    assertLignePanier(140, 9, ligne);
+    assertPrixTotalPanier(140 + 4);
   }
 
   @Test
   void appliquerReduction_PX3Plus1Avec3PX_PasDePXOffert() {
-    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 3);
+    var ligne = ajouterProduit(OFFERT_REF, 20, 3);
 
-    panier.ajouter(new Produit("P2", "L2", 1), 4);
+    ajouterProduit("P2", 1, 4);
 
     panier.appliquerReduction(OFFERT_CODE);
 
-    assertEquals(3, ligne.getQuantite());
-    assertEquals(60, ligne.getPrixTotal(), 0.0001);
-    assertEquals(60 + 4, panier.getPrixTotal(), 0.0001);
+    assertLignePanier(60, 3, ligne);
+    assertPrixTotalPanier(60 + 4);
   }
-
 }
