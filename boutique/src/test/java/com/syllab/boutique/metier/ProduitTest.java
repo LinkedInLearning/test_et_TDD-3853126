@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.syllab.boutique.NommageRoyOsherove;
 
@@ -23,39 +26,24 @@ public class ProduitTest {
     assertEquals(2.30, test.getPrix());
   }
 
-  @Test
-  void initialisation_prix0_leveIllegalArgumentException() {
-    Executable act = () -> new Produit("REF", "LIB", 0);
+  @ParameterizedTest
+  @ValueSource(doubles = { 0, -2.30 })
+  void initialisation_prixNonValide_leveIllegalArgumentException(double prix) {
+    Executable act = () -> new Produit("REF", "LIB", prix);
     assertThrows(IllegalArgumentException.class, act);
   }
 
-  @Test
-  void initialisation_prixNegatif_leveIllegalArgumentException() {
-    Executable act = () -> new Produit("REF", "LIB", -2.30);
+  @ParameterizedTest
+  @CsvSource({ "'', LIB", "REF, ''" })
+  void initialisation_referenceOuLibelleVide_leveIllegalArgumentException(String ref, String libelle) {
+    Executable act = () -> new Produit(ref, libelle, 2.30);
     assertThrows(IllegalArgumentException.class, act);
   }
-
-  @Test
-  void initialisation_referenceVide_leveIllegalArgumentException() {
-    Executable act = () -> new Produit("", "LIB", 2.30);
-    assertThrows(IllegalArgumentException.class, act);
-  }
-
-  @Test
-  void initialisation_referenceNull_leveNullPointerException() {
-    Executable act = () -> new Produit(null, "LIB", 2.30);
-    assertThrows(NullPointerException.class, act);
-  }
-
-  @Test
-  void initialisation_libelleVide_leveIllegalArgumentException() {
-    Executable act = () -> new Produit("REF", "", 2.30);
-    assertThrows(IllegalArgumentException.class, act);
-  }
-
-  @Test
-  void initialisation_libelleNull_leveNullPointerException() {
-    Executable act = () -> new Produit("REF", null, 2.30);
+  
+  @ParameterizedTest
+  @CsvSource({ ", LIB", "REF, " })
+  void initialisation_referenceOuLibelleNull_leveNullPointerException(String ref, String libelle) {
+    Executable act = () -> new Produit(ref, libelle, 2.30);
     assertThrows(NullPointerException.class, act);
   }
 
