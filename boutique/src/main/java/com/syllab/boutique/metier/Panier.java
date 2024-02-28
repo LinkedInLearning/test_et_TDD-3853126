@@ -1,39 +1,27 @@
 package com.syllab.boutique.metier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.syllab.boutique.metier.reducs.ProduitOffert;
+import com.syllab.boutique.metier.reducs.Reduc;
+import com.syllab.boutique.metier.reducs.ReducSeuil;
 
 /**
  * Représente un panier de site marchand.
  */
 public class Panier {
-  public final static String REDUC_CODE = "5POUR50";
-  public final static double REDUC_MONTANT = 5;
-  public final static double REDUC_SEUIL = 50;
 
-  public final static String OFFERT_CODE = "PX3+1";
-  public final static String OFFERT_REF = "PX";
-  public final static int    OFFERT_QTE = 4;
-
-  private static void appliquerPX3plus1(Ligne l) {
-    if (OFFERT_REF.equals(l.getProduit().getReference())) {
-      l.setProduitOffertQte(OFFERT_QTE);
-    }
-  } 
-  
   /**
    * Applique un coupon de réduction à la commande.
    * 
    * @param coupon Code du coupon.
    */
   public void appliquerReduction(String coupon) {
-    if (coupon.equals(REDUC_CODE))
-      this.reduc = REDUC_MONTANT;
-    else if (coupon.equals(OFFERT_CODE)) {
-      this.px3plus1 = true;
-      for (var l : this.getLignes()) {
-        appliquerPX3plus1(l);
-      }
+    if (coupons.containsKey(coupon)) {
+      this.reducs.add(coupons.get(coupon));
     }
   }
 
@@ -67,9 +55,6 @@ public class Panier {
 
     if (ligne == null) {
       ligne = new Ligne(produit, quantite);
-      if (this.px3plus1) {
-        appliquerPX3plus1(ligne);
-      }
       this.lignes.put(produit, ligne);
     } else {
       ligne.quantite += quantite;
@@ -104,7 +89,10 @@ public class Panier {
     var total = this.lignes.values().stream()
         .mapToDouble(l -> l.getPrixTotal())
         .sum();
-    return total - (total >= REDUC_SEUIL ? this.reduc : 0);
+    var totalReducs = this.reducs.stream()
+        .mapToDouble(l -> l.getMontantPanier(total))
+        .sum();
+    return total - totalReducs;
   }
 
   /**
@@ -157,9 +145,13 @@ public class Panier {
      *         quantité.
      */
     public double getPrixTotal() {
-      int offerts = this.offertQte == 0 ? 0 : this.quantite / this.offertQte;
-
-      return this.produit.getPrix() * (this.quantite - offerts);
+      var totalReducs = Panier.this.reducs.stream()
+          .mapToDouble(r -> r.getMontantLigne(
+              this.produit.getReference(),
+              this.quantite,
+              this.produit.getPrix()))
+          .sum();
+      return this.produit.getPrix() * this.quantite - totalReducs;
     }
 
     /**
@@ -186,18 +178,29 @@ public class Panier {
           this.produit.getReference(),
           this.quantite).hashCode();
     }
-
-    private void setProduitOffertQte(int qte) {
-      this.offertQte = qte;
-    }
-
-    private int offertQte = 0;
-
     private Produit produit;
     private int quantite;
   }
 
   private Map<Produit, Ligne> lignes = new HashMap<>();
-  private double reduc = 0;
-  private boolean px3plus1 = false;
+  private List<Reduc> reducs = new ArrayList<>();
+  
+  public final static String REDUC_CODE = "5POUR50";
+  public final static double REDUC_MONTANT = 5;
+  public final static double REDUC_SEUIL = 50;
+
+  public final static String OFFERT_CODE = "PX3+1";
+  public final static String OFFERT_REF = "PX";
+  public final static int OFFERT_QTE = 4;
+  
+  private static Map<String, Reduc> coupons = initCoupons();
+
+  private static Map<String, Reduc> initCoupons() {
+    var res = new HashMap<String, Reduc>();
+
+    res.put(OFFERT_CODE, new ProduitOffert(OFFERT_REF, OFFERT_QTE));
+    res.put(REDUC_CODE, new ReducSeuil(REDUC_MONTANT, REDUC_SEUIL));
+    return res;
+  }
 }
+
