@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.syllab.boutique.metier.reducs.CodeCoupons;
 import com.syllab.boutique.metier.reducs.Reduc;
 
 /**
@@ -17,8 +18,8 @@ public class Panier {
    * 
    * @param coupon Code du coupon.
    */
-  public void appliquerReduction(String coupon) {
-    var reduc = coupons.get(coupon);
+  public void appliquerReduction(CodeCoupons coupons, String coupon) {
+    var reduc = coupons.getReduc(coupon);
 
     if (reduc != null) {
       this.reducs.add(reduc);
@@ -186,9 +187,9 @@ public class Panier {
   private Map<Produit, Ligne> lignes = new HashMap<>();
   private List<Reduc> reducs = new ArrayList<>();
 
-  private static Map<String, Reduc> coupons = new HashMap<>();
+  // private static Map<String, Reduc> coupons = new HashMap<>();
 
-  public static void referencerCoupon(String code, Reduc reduction) {
-    coupons.put(code, reduction);
-  }
+  // public static void referencerCoupon(String code, Reduc reduction) {
+  //   coupons.put(code, reduction);
+  // }
 }

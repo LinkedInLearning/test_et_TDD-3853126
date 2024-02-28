@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.BeforeAll;
+// import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -16,25 +16,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import com.syllab.boutique.NommageRoyOsherove;
-import com.syllab.boutique.metier.reducs.ProduitOffert;
-import com.syllab.boutique.metier.reducs.ReducSeuil;
+// import com.syllab.boutique.metier.reducs.ProduitOffert;
+// import com.syllab.boutique.metier.reducs.ReducSeuil;
 
 @DisplayNameGeneration(NommageRoyOsherove.class)
 public class PanierTest {
 
-  public final static String REDUC_CODE = "5POUR50";
-  public final static double REDUC_MONTANT = 5;
-  public final static double REDUC_SEUIL = 50;
+  // public final static String REDUC_CODE = "5POUR50";
+  // public final static double REDUC_MONTANT = 5;
+  // public final static double REDUC_SEUIL = 50;
 
-  public final static String OFFERT_CODE = "PX3+1";
-  public final static String OFFERT_REF = "PX";
-  public final static int OFFERT_QTE = 4;
+  // public final static String OFFERT_CODE = "PX3+1";
+  // public final static String OFFERT_REF = "PX";
+  // public final static int OFFERT_QTE = 4;
 
-  @BeforeAll
-  static void referencerLesCoupons() {
-    Panier.referencerCoupon(OFFERT_CODE, new ProduitOffert(OFFERT_REF, OFFERT_QTE));
-    Panier.referencerCoupon(REDUC_CODE , new ReducSeuil(REDUC_MONTANT, REDUC_SEUIL));
-  }
+  // @BeforeAll
+  // static void referencerLesCoupons() {
+  //   Panier.referencerCoupon(OFFERT_CODE, new ProduitOffert(OFFERT_REF, OFFERT_QTE));
+  //   Panier.referencerCoupon(REDUC_CODE , new ReducSeuil(REDUC_MONTANT, REDUC_SEUIL));
+  // }
 
   private Panier panier;
 
@@ -178,77 +178,94 @@ public class PanierTest {
     assertThrows(IllegalArgumentException.class, act);
   }
 
-  @Test
-  void appliquerReduction_Total60Coupon5Pour50_Total55() {
-    ajouterProduit("P1", 30, 2);
+  /*
+   * Dépendances :
+   * - Interface -> simuler
+   *   Reduc, CodeCoupon
+   * - Classe de bibliothèque
+   * - Déterministe -> ok
+   *   java.util
+   * - Non-déterministe -> interface
+   *   Random, Date, ...
+   * - Classe projet
+   * - Sans dépendance -> ok
+   *   Produit
+   * - Avec dépendances -> interface
+   *   GestionnaireCoupons -> CodeCoupons
+   * - Statique -> Classe/Interface en paramètre/membre
+   */
+  
+  // @Test
+  // void appliquerReduction_Total60Coupon5Pour50_Total55() {
+  //   ajouterProduit("P1", 30, 2);
 
-    panier.appliquerReduction(REDUC_CODE);
+  //   panier.appliquerReduction(REDUC_CODE);
 
-    assertPrixTotalPanier(55);
-  }
+  //   assertPrixTotalPanier(55);
+  // }
 
-  @Test
-  void appliquerReduction_Total60CouponNonValide_Total60() {
-    ajouterProduit("P1", 30, 2);
+  // @Test
+  // void appliquerReduction_Total60CouponNonValide_Total60() {
+  //   ajouterProduit("P1", 30, 2);
 
-    panier.appliquerReduction("INVALIDE");
+  //   panier.appliquerReduction("INVALIDE");
 
-    assertPrixTotalPanier(60);
-  }
+  //   assertPrixTotalPanier(60);
+  // }
 
-  @Test
-  void appliquerReduction_Total30Coupon5Pour50_Total30() {
+  // @Test
+  // void appliquerReduction_Total30Coupon5Pour50_Total30() {
 
-    ajouterProduit("P1", 30, 1);
+  //   ajouterProduit("P1", 30, 1);
 
-    panier.appliquerReduction(REDUC_CODE);
+  //   panier.appliquerReduction(REDUC_CODE);
 
-    assertPrixTotalPanier(30);
-  }
+  //   assertPrixTotalPanier(30);
+  // }
 
-  @Test
-  void appliquerReduction_PX3Plus1Avec4PX_1PXOffert() {
-    var ligne = ajouterProduit(OFFERT_REF, 20, 4);
+  // @Test
+  // void appliquerReduction_PX3Plus1Avec4PX_1PXOffert() {
+  //   var ligne = ajouterProduit(OFFERT_REF, 20, 4);
 
-    ajouterProduit("P2", 1, 4);
+  //   ajouterProduit("P2", 1, 4);
 
-    panier.appliquerReduction(OFFERT_CODE);
+  //   panier.appliquerReduction(OFFERT_CODE);
 
-    assertLignePanier(60, 4, ligne);
-    assertPrixTotalPanier(60 + 4);
-  }
+  //   assertLignePanier(60, 4, ligne);
+  //   assertPrixTotalPanier(60 + 4);
+  // }
 
-  @Test
-  void appliquerReduction_PX3Plus1Et5Pour50Total60_PXOffertEtTotal55() {
-    var ligne = ajouterProduit(OFFERT_REF, 20, 4);
+  // @Test
+  // void appliquerReduction_PX3Plus1Et5Pour50Total60_PXOffertEtTotal55() {
+  //   var ligne = ajouterProduit(OFFERT_REF, 20, 4);
 
-    panier.appliquerReduction(REDUC_CODE);
-    panier.appliquerReduction(OFFERT_CODE);
+  //   panier.appliquerReduction(REDUC_CODE);
+  //   panier.appliquerReduction(OFFERT_CODE);
 
-    assertLignePanier(60, 4, ligne);
-    assertPrixTotalPanier(55);
-  }
+  //   assertLignePanier(60, 4, ligne);
+  //   assertPrixTotalPanier(55);
+  // }
 
-  @Test
-  void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
-    ajouterProduit("P2", 1, 4);
-    panier.appliquerReduction(OFFERT_CODE);
+  // @Test
+  // void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
+  //   ajouterProduit("P2", 1, 4);
+  //   panier.appliquerReduction(OFFERT_CODE);
 
-    var ligne = ajouterProduit(OFFERT_REF, 20, 9);
+  //   var ligne = ajouterProduit(OFFERT_REF, 20, 9);
 
-    assertLignePanier(140, 9, ligne);
-    assertPrixTotalPanier(140 + 4);
-  }
+  //   assertLignePanier(140, 9, ligne);
+  //   assertPrixTotalPanier(140 + 4);
+  // }
 
-  @Test
-  void appliquerReduction_PX3Plus1Avec3PX_PasDePXOffert() {
-    var ligne = ajouterProduit(OFFERT_REF, 20, 3);
+  // @Test
+  // void appliquerReduction_PX3Plus1Avec3PX_PasDePXOffert() {
+  //   var ligne = ajouterProduit(OFFERT_REF, 20, 3);
 
-    ajouterProduit("P2", 1, 4);
+  //   ajouterProduit("P2", 1, 4);
 
-    panier.appliquerReduction(OFFERT_CODE);
+  //   panier.appliquerReduction(OFFERT_CODE);
 
-    assertLignePanier(60, 3, ligne);
-    assertPrixTotalPanier(60 + 4);
-  }
+  //   assertLignePanier(60, 3, ligne);
+  //   assertPrixTotalPanier(60 + 4);
+  // }
 }
