@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.syllab.boutique.metier.reducs.ProduitOffert;
 import com.syllab.boutique.metier.reducs.Reduc;
-import com.syllab.boutique.metier.reducs.ReducSeuil;
 
 /**
  * Représente un panier de site marchand.
@@ -178,29 +176,17 @@ public class Panier {
           this.produit.getReference(),
           this.quantite).hashCode();
     }
+
     private Produit produit;
     private int quantite;
   }
 
   private Map<Produit, Ligne> lignes = new HashMap<>();
   private List<Reduc> reducs = new ArrayList<>();
-  
-  public final static String REDUC_CODE = "5POUR50";
-  public final static double REDUC_MONTANT = 5;
-  public final static double REDUC_SEUIL = 50;
 
-  public final static String OFFERT_CODE = "PX3+1";
-  public final static String OFFERT_REF = "PX";
-  public final static int OFFERT_QTE = 4;
-  
-  private static Map<String, Reduc> coupons = initCoupons();
+  private static Map<String, Reduc> coupons = new HashMap<>();
 
-  private static Map<String, Reduc> initCoupons() {
-    var res = new HashMap<String, Reduc>();
-
-    res.put(OFFERT_CODE, new ProduitOffert(OFFERT_REF, OFFERT_QTE));
-    res.put(REDUC_CODE, new ReducSeuil(REDUC_MONTANT, REDUC_SEUIL));
-    return res;
+  public static void referencerCoupon(String code, Reduc reduction) {
+    coupons.put(code, reduction);
   }
 }
-

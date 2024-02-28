@@ -14,9 +14,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import com.syllab.boutique.NommageRoyOsherove;
+import com.syllab.boutique.metier.reducs.ProduitOffert;
+import com.syllab.boutique.metier.reducs.ReducSeuil;
 
 @DisplayNameGeneration(NommageRoyOsherove.class)
 public class PanierTest {
+  
+  public final static String REDUC_CODE = "5POUR50";
+  public final static double REDUC_MONTANT = 5;
+  public final static double REDUC_SEUIL = 50;
+
+  public final static String OFFERT_CODE = "PX3+1";
+  public final static String OFFERT_REF = "PX";
+  public final static int OFFERT_QTE = 4;
+
+  static void referencerLesCoupons() {
+    Panier.referencerCoupon(OFFERT_CODE, new ProduitOffert(OFFERT_REF, OFFERT_QTE));
+    Panier.referencerCoupon(REDUC_CODE , new ReducSeuil(REDUC_MONTANT, REDUC_SEUIL));
+  }
+
   // Initialisation
   // - Usuel
   @Test
@@ -166,17 +182,19 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_Total60Coupon5Pour50_Total55() {
+    referencerLesCoupons();
     var panier = new Panier();
 
     panier.ajouter(new Produit("P1", "L1", 30), 2);
 
-    panier.appliquerReduction(Panier.REDUC_CODE);
+    panier.appliquerReduction(REDUC_CODE);
 
     assertEquals(55, panier.getPrixTotal(), 0.0001);
   }
 
   @Test
   void appliquerReduction_Total60CouponNonValide_Total60() {
+    referencerLesCoupons();
     var panier = new Panier();
 
     panier.ajouter(new Produit("P1", "L1", 30), 2);
@@ -188,23 +206,25 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_Total30Coupon5Pour50_Total30() {
+    referencerLesCoupons();
     var panier = new Panier();
 
     panier.ajouter(new Produit("P1", "L1", 30), 1);
 
-    panier.appliquerReduction(Panier.REDUC_CODE);
+    panier.appliquerReduction(REDUC_CODE);
 
     assertEquals(30, panier.getPrixTotal(), 0.0001);
   }
 
   @Test
   void appliquerReduction_PX3Plus1Avec4PX_1PXOffert() {
+    referencerLesCoupons();
     var panier = new Panier();
-    var ligne = panier.ajouter(new Produit(Panier.OFFERT_REF, "LX", 20), 4);
+    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 4);
 
     panier.ajouter(new Produit("P2", "L2", 1), 4);
 
-    panier.appliquerReduction(Panier.OFFERT_CODE);
+    panier.appliquerReduction(OFFERT_CODE);
 
     assertEquals(4, ligne.getQuantite());
     assertEquals(60, ligne.getPrixTotal(), 0.0001);
@@ -213,12 +233,13 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Et5Pour50Total60_PXOffertEtTotal55() {
+    referencerLesCoupons();
     var panier = new Panier();
 
-    var ligne = panier.ajouter(new Produit(Panier.OFFERT_REF, "LX", 20), 4);
+    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 4);
 
-    panier.appliquerReduction(Panier.REDUC_CODE);
-    panier.appliquerReduction(Panier.OFFERT_CODE);
+    panier.appliquerReduction(REDUC_CODE);
+    panier.appliquerReduction(OFFERT_CODE);
 
     assertEquals(4, ligne.getQuantite());
     assertEquals(60, ligne.getPrixTotal(), 0.0001);
@@ -227,12 +248,13 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
+    referencerLesCoupons();
     var panier = new Panier();
 
     panier.ajouter(new Produit("P2", "L2", 1), 4);
-    panier.appliquerReduction(Panier.OFFERT_CODE);
+    panier.appliquerReduction(OFFERT_CODE);
 
-    var ligne = panier.ajouter(new Produit(Panier.OFFERT_REF, "LX", 20), 9);
+    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 9);
 
     assertEquals(9, ligne.getQuantite());
     assertEquals(140, ligne.getPrixTotal(), 0.0001);
@@ -241,12 +263,13 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Avec3PX_PasDePXOffert() {
+    referencerLesCoupons();
     var panier = new Panier();
-    var ligne = panier.ajouter(new Produit(Panier.OFFERT_REF, "LX", 20), 3);
+    var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 3);
 
     panier.ajouter(new Produit("P2", "L2", 1), 4);
 
-    panier.appliquerReduction(Panier.OFFERT_CODE);
+    panier.appliquerReduction(OFFERT_CODE);
 
     assertEquals(3, ligne.getQuantite());
     assertEquals(60, ligne.getPrixTotal(), 0.0001);
