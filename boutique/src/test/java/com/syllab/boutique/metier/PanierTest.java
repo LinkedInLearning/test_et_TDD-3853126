@@ -14,6 +14,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.function.Executable;
 
 import com.syllab.boutique.NommageRoyOsherove;
@@ -76,9 +81,16 @@ public class PanierTest {
   // - Extrême (aucun)
   // - Erreur (aucun)
 
+  static boolean configServerOk() {
+    return false;
+  }
+
   // Ajouter
   // - Usuel
   @Test
+  @EnabledOnJre({JRE.JAVA_17, JRE.JAVA_20})
+  @EnabledOnOs({OS.WINDOWS, OS.LINUX})
+  @EnabledIf("configServerOk")
   void ajouter_1Produit() {
     ajouterProduit("AT12", 2, 3);
 
