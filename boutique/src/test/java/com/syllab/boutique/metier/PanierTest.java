@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ import com.syllab.boutique.metier.reducs.ReducSeuil;
 
 @DisplayNameGeneration(NommageRoyOsherove.class)
 public class PanierTest {
-  
+
   public final static String REDUC_CODE = "5POUR50";
   public final static double REDUC_MONTANT = 5;
   public final static double REDUC_SEUIL = 50;
@@ -28,20 +30,26 @@ public class PanierTest {
   public final static String OFFERT_REF = "PX";
   public final static int OFFERT_QTE = 4;
 
+  @BeforeAll
   static void referencerLesCoupons() {
     Panier.referencerCoupon(OFFERT_CODE, new ProduitOffert(OFFERT_REF, OFFERT_QTE));
     Panier.referencerCoupon(REDUC_CODE , new ReducSeuil(REDUC_MONTANT, REDUC_SEUIL));
+  }
+
+  private Panier panier;
+
+  @BeforeEach
+  void creerPanier() {
+    panier = new Panier();
   }
 
   // Initialisation
   // - Usuel
   @Test
   void initialisation_panierVide() {
-    var p = new Panier();
-
-    assertTrue(p.estVide());
-    assertEquals(0, p.getPrixTotal(), 0.0001);
-    assertFalse(p.getLignes().iterator().hasNext(), "Présence d'une ligne sur un nouveau panier");
+    assertTrue(panier.estVide());
+    assertEquals(0, panier.getPrixTotal(), 0.0001);
+    assertFalse(panier.getLignes().iterator().hasNext(), "Présence d'une ligne sur un nouveau panier");
   }
   // - Extrême (aucun)
   // - Erreur (aucun)
@@ -52,7 +60,6 @@ public class PanierTest {
   void ajouter_1Produit() {
     // Arrange
     var p = new Produit("AT12", "Ciment", 2);
-    var panier = new Panier();
 
     // Act
     panier.ajouter(p, 3);
@@ -66,7 +73,6 @@ public class PanierTest {
   void ajouter_2ProduitsDifferents() {
     var p1 = new Produit("P1", "L1", 2);
     var p2 = new Produit("P2", "L2", 5);
-    var panier = new Panier();
 
     var l1 = panier.ajouter(p1, 3);
     var l2 = panier.ajouter(p2, 1);
@@ -80,7 +86,6 @@ public class PanierTest {
   @DisplayName("(ajouter) 1 produit 2 fois -> additionne les quantités")
   void ajouter_1Produit2Fois_AdditionneLesQuantites() {
     var p1 = new Produit("P1", "L1", 2);
-    var panier = new Panier();
     var l = panier.new Ligne(p1, 4);
 
     panier.ajouter(p1, 3);
@@ -96,7 +101,6 @@ public class PanierTest {
   @Test
   void ajouter_quantite0_leveIllegalArgumentException() {
     var p1 = new Produit("P1", "L1", 2);
-    var panier = new Panier();
 
     Executable act = () -> panier.ajouter(p1, 0);
 
@@ -106,7 +110,6 @@ public class PanierTest {
   @Test
   void ajouter_quantiteNegative_leveIllegalArgumentException() {
     var p1 = new Produit("P1", "L1", 2);
-    var panier = new Panier();
 
     Executable act = () -> panier.ajouter(p1, -3);
 
@@ -115,7 +118,6 @@ public class PanierTest {
 
   @Test
   void ajouter_produitNull_leveNullPointerException() {
-    var panier = new Panier();
 
     Executable act = () -> panier.ajouter(null, 2);
 
@@ -127,7 +129,6 @@ public class PanierTest {
   @Test
   void diminuer_produitEnQuantite2OuPlus() {
     var p = new Produit("P1", "L1", 2);
-    var panier = new Panier();
 
     panier.ajouter(p, 3);
 
@@ -141,7 +142,6 @@ public class PanierTest {
   @Test
   void diminuer_dernierProduitEnQuantite1_panierVide() {
     var p = new Produit("P1", "L1", 2);
-    var panier = new Panier();
 
     panier.ajouter(p, 1);
 
@@ -155,7 +155,6 @@ public class PanierTest {
   void diminuer_avantDernierProduitEnQuantite1_retireLeProduit() {
     var p1 = new Produit("P1", "L1", 2);
     var p2 = new Produit("P2", "L2", 5);
-    var panier = new Panier();
 
     panier.ajouter(p1, 3);
     panier.ajouter(p2, 1);
@@ -171,7 +170,6 @@ public class PanierTest {
   void diminuer_produitAbsentDuPanier_leveIllegalArgumentException() {
     var p1 = new Produit("P1", "L1", 2);
     var p2 = new Produit("P2", "L2", 5);
-    var panier = new Panier();
 
     panier.ajouter(p1, 3);
 
@@ -182,8 +180,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_Total60Coupon5Pour50_Total55() {
-    referencerLesCoupons();
-    var panier = new Panier();
 
     panier.ajouter(new Produit("P1", "L1", 30), 2);
 
@@ -194,8 +190,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_Total60CouponNonValide_Total60() {
-    referencerLesCoupons();
-    var panier = new Panier();
 
     panier.ajouter(new Produit("P1", "L1", 30), 2);
 
@@ -206,8 +200,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_Total30Coupon5Pour50_Total30() {
-    referencerLesCoupons();
-    var panier = new Panier();
 
     panier.ajouter(new Produit("P1", "L1", 30), 1);
 
@@ -218,8 +210,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Avec4PX_1PXOffert() {
-    referencerLesCoupons();
-    var panier = new Panier();
     var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 4);
 
     panier.ajouter(new Produit("P2", "L2", 1), 4);
@@ -233,8 +223,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Et5Pour50Total60_PXOffertEtTotal55() {
-    referencerLesCoupons();
-    var panier = new Panier();
 
     var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 4);
 
@@ -248,8 +236,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Avec9PX_2PXOfferts() {
-    referencerLesCoupons();
-    var panier = new Panier();
 
     panier.ajouter(new Produit("P2", "L2", 1), 4);
     panier.appliquerReduction(OFFERT_CODE);
@@ -263,8 +249,6 @@ public class PanierTest {
 
   @Test
   void appliquerReduction_PX3Plus1Avec3PX_PasDePXOffert() {
-    referencerLesCoupons();
-    var panier = new Panier();
     var ligne = panier.ajouter(new Produit(OFFERT_REF, "LX", 20), 3);
 
     panier.ajouter(new Produit("P2", "L2", 1), 4);
