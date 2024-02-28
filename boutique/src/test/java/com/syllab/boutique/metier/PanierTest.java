@@ -8,9 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
+import com.syllab.boutique.NommageRoyOsherove;
+
+@DisplayNameGeneration(NommageRoyOsherove.class)
 public class PanierTest {
   // Initialisation
   // - Usuel
@@ -20,7 +25,7 @@ public class PanierTest {
 
     assertTrue(p.estVide());
     assertEquals(0, p.getPrixTotal(), 0.0001);
-    assertFalse(p.getLignes().iterator().hasNext());
+    assertFalse(p.getLignes().iterator().hasNext(), "Présence d'une ligne sur un nouveau panier");
   }
   // - Extrême (aucun)
   // - Erreur (aucun)
@@ -56,6 +61,7 @@ public class PanierTest {
   }
 
   @Test
+  @DisplayName("(ajouter) 1 produit 2 fois -> additionne les quantités")
   void ajouter_1Produit2Fois_AdditionneLesQuantites() {
     var p1 = new Produit("P1", "L1", 2);
     var panier = new Panier();
