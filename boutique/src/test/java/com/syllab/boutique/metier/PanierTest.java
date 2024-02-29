@@ -5,6 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
@@ -181,18 +186,26 @@ public class PanierTest {
    */
   @Test
   void appliquerReduction_couponInexistant() {
-    CodeCoupons coupons /* = ... */;
+    CodeCoupons coupons = mock(CodeCoupons.class);
 
-    // panier.appliquerReduction(coupons, "CP");
+    when(coupons.getReduc("CP")).thenReturn(null);
+    ajouterProduit("P1", 10, 2);
+    panier.appliquerReduction(coupons, "CP");
     
+    assertPrixTotalPanier(20);
   } 
   @Test
   void appliquerReduction_reducPanier() {
-    CodeCoupons coupons /* = ... */;
-    Reduc reduc /* = ... */;
+    CodeCoupons coupons = mock(CodeCoupons.class);
+    Reduc reduc = mock(Reduc.class);
 
-    // panier.appliquerReduction(coupons, "CP");
-    /* ... */
+    when(coupons.getReduc("CP")).thenReturn(reduc);
+    when(reduc.getMontantLigne(anyString(), anyInt(), anyDouble())).thenReturn(0.0);
+    when(reduc.getMontantPanier(anyDouble())).thenReturn(5.0);
+    ajouterProduit("P1", 10, 2);
+    panier.appliquerReduction(coupons, "CP");
+
+    assertPrixTotalPanier(15);
   }
   @Test
   void appliquerReduction_reducPanierLigne() {
