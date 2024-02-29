@@ -12,15 +12,24 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syllab.petstore.Pet.Status;
 
 public class PetTest {
   private final static String PETSTORE_API = "https://petstore3.swagger.io/api/v3";
   private HttpClient http;
+  private ObjectMapper json;
 
   @BeforeEach
   void init() {
     http = HttpClient.newHttpClient();
+
+    json = new ObjectMapper();
+    json.configure(
+      DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+      false
+    );
   }
   
   @Test
@@ -37,14 +46,19 @@ public class PetTest {
   @Test
   void creer_rex918273645() throws IOException, InterruptedException {
     var rex = new Pet(918273645, "Rex", Status.pending);
-    var corps = ""; // à faire : sérialiser rex en json
+    var corps = json.writeValueAsString(rex);
     var requete = HttpRequest
         .newBuilder(construire("/pet"))
+        .header("Content-Type", "application/json")
+        .header("accept", "application/json")
         .POST(BodyPublishers.ofString(corps))
         .build();
 
     var reponse = http.send(requete, BodyHandlers.ofString());
-    Pet reel = null; // à faire : dé-sérialiser l'objet renvoyé
+    Pet reel = json.readValue(reponse.body(), Pet.class);
+
+    System.out.println(corps);
+    System.out.println(reponse.body());
 
     assertEquals(200, reponse.statusCode());
     assertEquals(rex, reel);
