@@ -186,10 +186,4 @@ public class Panier {
 
   private Map<Produit, Ligne> lignes = new HashMap<>();
   private List<Reduc> reducs = new ArrayList<>();
-
-  // private static Map<String, Reduc> coupons = new HashMap<>();
-
-  // public static void referencerCoupon(String code, Reduc reduction) {
-  //   coupons.put(code, reduction);
-  // }
 }
