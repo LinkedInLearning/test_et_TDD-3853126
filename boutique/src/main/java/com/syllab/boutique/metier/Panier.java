@@ -88,6 +88,7 @@ public class Panier {
     }
     return total - totalReducs;
   }
+
   /**
    * Calcule le montant total du panier.
    * 
@@ -98,7 +99,13 @@ public class Panier {
         .mapToDouble(l -> l.getPrixTotal())
         .sum();
     var totalReducs = this.reducs.stream()
-        .mapToDouble(l -> l.getMontantPanier(total))
+        .mapToDouble(l -> {
+          try {
+            return l.getMontantPanier(total);
+          } catch (Exception e) {
+            return 0;
+          }
+        })
         .sum();
     return differencePositive(total, totalReducs);
   }
@@ -154,10 +161,16 @@ public class Panier {
      */
     public double getPrixTotal() {
       var totalReducs = Panier.this.reducs.stream()
-          .mapToDouble(r -> r.getMontantLigne(
-                this.produit.getReference(),
-                this.quantite,
-                this.produit.getPrix()))
+          .mapToDouble(r -> {
+            try {
+              return r.getMontantLigne(
+                  this.produit.getReference(),
+                  this.quantite,
+                  this.produit.getPrix());
+            } catch (Exception e) {
+              return 0;
+            }
+          })
           .sum();
       return differencePositive(this.produit.getPrix() * this.quantite, totalReducs);
     }

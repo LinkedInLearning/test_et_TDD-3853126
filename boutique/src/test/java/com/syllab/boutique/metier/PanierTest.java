@@ -275,7 +275,7 @@ public class PanierTest {
     retour_getMontantLigne(c1, anyString(), 0);
     retour_getMontantLigne(c2, anyString(), 0);
 
-    // ??? : c1 lève une exception lors du getMontantPanier
+    when(c1.getMontantPanier(anyDouble())).thenThrow(new IllegalArgumentException("oups"));
     retour_getMontantPanier(c2, 5);
 
     panier.appliquerReduction(coupons, "C1");
@@ -291,7 +291,8 @@ public class PanierTest {
     Reduc c1 = newReduc("C1");
     Reduc c2 = newReduc("C2");
 
-    // ??? : c1 lève une exception lors du getMontantLigne sur P1
+    when(c1.getMontantLigne(eq("P1"), anyInt(), anyDouble()))
+      .thenThrow(new IllegalArgumentException("oups"));
     retour_getMontantLigne(c2, eq("P1"), 6);
     retour_getMontantLigne(c1, eq("P2"), 1);
     retour_getMontantLigne(c2, eq("P2"), 0);
