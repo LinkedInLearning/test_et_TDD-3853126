@@ -181,7 +181,7 @@ public class PanierTest {
   /*
    * Dépendances :
    * - Interface -> simuler
-   *   Reduc, CodeCoupon
+   *   Reduc, CodeCoupons
    * - Classe de bibliothèque
    * - Déterministe -> ok
    *   java.util
