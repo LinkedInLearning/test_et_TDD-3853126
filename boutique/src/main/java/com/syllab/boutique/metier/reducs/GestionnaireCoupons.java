@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Représente un gestionnaire de coupons de réductions.
  */
-public class GestionnaireCoupons {
+public class GestionnaireCoupons implements CodeCoupons {
   /**
    * Référence un coupon de réduction.
    * 
