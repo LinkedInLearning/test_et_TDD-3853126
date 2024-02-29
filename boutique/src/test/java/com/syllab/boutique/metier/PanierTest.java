@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -322,9 +323,12 @@ public class PanierTest {
     ajouterProduit("P2", 100, 1);
 
     assertPrixTotalPanier(20 - 6 + 100 - 1 - 3 - 7);
-    verify(c1, times(1)).getMontantLigne("P1", 2, 10);
-    verify(c2, times(1)).getMontantLigne("P1", 2, 10);
-    verify(c1, times(1)).getMontantLigne("P2", 1, 100);
-    verify(c2, times(1)).getMontantLigne("P2", 1, 100);
+    var ordre = inOrder(c1, c2);
+    ordre.verify(c1, times(1)).getMontantLigne("P1", 2, 10);
+    ordre.verify(c2, times(1)).getMontantLigne("P1", 2, 10);
+    ordre.verify(c1, times(1)).getMontantLigne("P2", 1, 100);
+    ordre.verify(c2, times(1)).getMontantLigne("P2", 1, 100);
+    ordre.verify(c1).getMontantPanier(20 - 6 + 100 - 1);
+    ordre.verify(c2).getMontantPanier(20 - 6 + 100 - 1);
   }
 }
