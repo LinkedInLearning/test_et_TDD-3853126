@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToDoubleFunction;
 
 import com.syllab.boutique.metier.reducs.CodeCoupons;
 import com.syllab.boutique.metier.reducs.Reduc;
@@ -89,6 +90,15 @@ public class Panier {
     return total - totalReducs;
   }
 
+  private ToDoubleFunction<Reduc> enclave(ToDoubleFunction<Reduc> expr) {
+    return r -> {
+      try {
+        return expr.applyAsDouble(r);
+      } catch (Exception e) {
+        return 0;
+      }
+    };
+  }
   /**
    * Calcule le montant total du panier.
    * 
@@ -99,13 +109,7 @@ public class Panier {
         .mapToDouble(l -> l.getPrixTotal())
         .sum();
     var totalReducs = this.reducs.stream()
-        .mapToDouble(l -> {
-          try {
-            return l.getMontantPanier(total);
-          } catch (Exception e) {
-            return 0;
-          }
-        })
+        .mapToDouble(enclave(l -> l.getMontantPanier(total)))
         .sum();
     return differencePositive(total, totalReducs);
   }
@@ -161,17 +165,13 @@ public class Panier {
      */
     public double getPrixTotal() {
       var totalReducs = Panier.this.reducs.stream()
-          .mapToDouble(r -> {
-            try {
-              return r.getMontantLigne(
-                  this.produit.getReference(),
-                  this.quantite,
-                  this.produit.getPrix());
-            } catch (Exception e) {
-              return 0;
-            }
-          })
-          .sum();
+          .mapToDouble(enclave(
+            r -> r.getMontantLigne(
+              this.produit.getReference(), 
+              this.quantite,
+              this.produit.getPrix()
+            )
+          )).sum();
       return differencePositive(this.produit.getPrix() * this.quantite, totalReducs);
     }
 

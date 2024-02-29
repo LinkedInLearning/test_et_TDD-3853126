@@ -211,6 +211,17 @@ public class PanierTest {
   }
 
   @Test
+  void appliquerReduction_panierVide_pasDInvocation() {
+    var cp = newReduc("CP");
+    panier.appliquerReduction(coupons, "CP");
+
+    var prixTotal = panier.getPrixTotal();
+
+    assertEquals(0, prixTotal);
+    // Assertion cp.getMontantPanier et cp.getMontantLigne jamais appelés !
+  }
+
+  @Test
   void appliquerReduction_reducPanier() {
     var reduc = newReduc("CP");
 
@@ -292,7 +303,7 @@ public class PanierTest {
     Reduc c2 = newReduc("C2");
 
     when(c1.getMontantLigne(eq("P1"), anyInt(), anyDouble()))
-      .thenThrow(new IllegalArgumentException("oups"));
+        .thenThrow(new IllegalArgumentException("oups"));
     retour_getMontantLigne(c2, eq("P1"), 6);
     retour_getMontantLigne(c1, eq("P2"), 1);
     retour_getMontantLigne(c2, eq("P2"), 0);
@@ -307,5 +318,7 @@ public class PanierTest {
     ajouterProduit("P2", 100, 1);
 
     assertPrixTotalPanier(20 - 6 + 100 - 1 - 3 - 7);
+    // Assertion c1.getMontantLigne et c2.getMontantLigne appelés 1 fois pour chaque
+    // ligne avec les bons paramètres !
   }
 }
