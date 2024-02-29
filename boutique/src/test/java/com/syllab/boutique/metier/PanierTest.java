@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,10 +28,12 @@ import com.syllab.boutique.metier.reducs.Reduc;
 public class PanierTest {
 
   private Panier panier;
+  private CodeCoupons coupons;
 
   @BeforeEach
   void creerPanier() {
     panier = new Panier();
+    coupons = mock(CodeCoupons.class);
   }
 
   Panier.Ligne ajouterProduit(String ref, double prix, int qte) {
@@ -171,53 +174,137 @@ public class PanierTest {
   /*
    * Dépendances :
    * - Interface -> simuler
-   *   Reduc, CodeCoupons
+   * Reduc, CodeCoupons
    * - Classe de bibliothèque
    * - Déterministe -> ok
-   *   java.util
+   * java.util
    * - Non-déterministe -> interface
-   *   Random, Date, ...
+   * Random, Date, ...
    * - Classe projet
    * - Sans dépendance -> ok
-   *   Produit
+   * Produit
    * - Avec dépendances -> interface
-   *   GestionnaireCoupons -> CodeCoupons
+   * GestionnaireCoupons -> CodeCoupons
    * - Statique -> Classe/Interface en paramètre/membre
    */
+  private Reduc newReduc(String nom) {
+    var r = mock(Reduc.class);
+
+    when(coupons.getReduc(nom)).thenReturn(r);
+    return r;
+  }
+
+  private void retour_getMontantPanier(Reduc r, double montant) {
+    when(r.getMontantPanier(anyDouble())).thenReturn(montant);
+  }
+
+  private void retour_getMontantLigne(Reduc r, String ref, double montant) {
+    when(r.getMontantLigne(ref, anyInt(), anyDouble())).thenReturn(montant);
+  }
+
   @Test
   void appliquerReduction_couponInexistant() {
-    CodeCoupons coupons = mock(CodeCoupons.class);
-
-    when(coupons.getReduc("CP")).thenReturn(null);
     ajouterProduit("P1", 10, 2);
     panier.appliquerReduction(coupons, "CP");
-    
+
     assertPrixTotalPanier(20);
-  } 
+  }
+
   @Test
   void appliquerReduction_reducPanier() {
-    CodeCoupons coupons = mock(CodeCoupons.class);
-    Reduc reduc = mock(Reduc.class);
+    var reduc = newReduc("CP");
 
-    when(coupons.getReduc("CP")).thenReturn(reduc);
-    when(reduc.getMontantLigne(anyString(), anyInt(), anyDouble())).thenReturn(0.0);
-    when(reduc.getMontantPanier(anyDouble())).thenReturn(5.0);
+    retour_getMontantLigne(reduc, anyString(), 0.0);
+    retour_getMontantPanier(reduc, 5);
     ajouterProduit("P1", 10, 2);
+
     panier.appliquerReduction(coupons, "CP");
 
     assertPrixTotalPanier(15);
   }
+
   @Test
   void appliquerReduction_reducPanierLigne() {
-    /* ... */
+    var cp = newReduc("CP");
+
+    retour_getMontantLigne(cp, eq("P1"), 3);
+    retour_getMontantLigne(cp, eq("P2"), 0);
+    retour_getMontantPanier(cp, 5);
+
+    ajouterProduit("P1", 10, 2);
+    ajouterProduit("P2", 100, 1);
+
+    panier.appliquerReduction(coupons, "CP");
+
+    assertPrixTotalPanier((20 - 3) + 100 - 5);
   }
+
   @Test
   void appliquerReduction_reducPanierSuperieurAuPanier_leveIllegalStateException() {
-    /* ... */
-  } 
+    var cp = newReduc("CP");
+
+    retour_getMontantLigne(cp, anyString(), 0.0);
+    retour_getMontantPanier(cp, 25);
+    ajouterProduit("P1", 10, 2);
+    panier.appliquerReduction(coupons, "CP");
+
+    Executable act = () -> panier.getPrixTotal();
+
+    assertThrows(IllegalStateException.class, act);
+  }
+
   @Test
   void appliquerReduction_reducLigneSuperieureALaLigne_leveIllegalStateException() {
-    /* ... */
+    var cp = newReduc("CP");
+
+    retour_getMontantLigne(cp, anyString(), 25);
+    retour_getMontantPanier(cp, 5);
+    ajouterProduit("P1", 10, 2);
+    panier.appliquerReduction(coupons, "CP");
+
+    Executable act = () -> panier.getPrixTotal();
+
+    assertThrows(IllegalStateException.class, act);
   }
-  
+
+  @Test
+  void appliquerReduction_reducLeveUneExceptionSurPanier_reductionIgnoree() {
+    Reduc c1 = newReduc("C1");
+    Reduc c2 = newReduc("C2");
+
+    retour_getMontantLigne(c1, anyString(), 0);
+    retour_getMontantLigne(c2, anyString(), 0);
+
+    // ??? : c1 lève une exception lors du getMontantPanier
+    retour_getMontantPanier(c2, 5);
+
+    panier.appliquerReduction(coupons, "C1");
+    panier.appliquerReduction(coupons, "C2");
+
+    ajouterProduit("P1", 10, 2);
+
+    assertPrixTotalPanier(15);
+  }
+
+  @Test
+  void appliquerReduction_reducLeveUneExceptionSurLaPremiereLigne_reductionIgnoree() {
+    Reduc c1 = newReduc("C1");
+    Reduc c2 = newReduc("C2");
+
+    // ??? : c1 lève une exception lors du getMontantLigne sur P1
+    retour_getMontantLigne(c2, eq("P1"), 6);
+    retour_getMontantLigne(c1, eq("P2"), 1);
+    retour_getMontantLigne(c2, eq("P2"), 0);
+
+    retour_getMontantPanier(c1, 3);
+    retour_getMontantPanier(c2, 7);
+
+    panier.appliquerReduction(coupons, "C1");
+    panier.appliquerReduction(coupons, "C2");
+
+    ajouterProduit("P1", 10, 2);
+    ajouterProduit("P2", 100, 1);
+
+    assertPrixTotalPanier(20 - 6 + 100 - 1 - 3 - 7);
+  }
 }

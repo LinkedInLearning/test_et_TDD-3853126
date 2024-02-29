@@ -81,6 +81,13 @@ public class Panier {
     }
   }
 
+  private static double differencePositive(double total, double totalReducs) {
+    if (totalReducs > total) {
+      throw new IllegalStateException(
+          "Le montant des réductions dépasse le montant total.");
+    }
+    return total - totalReducs;
+  }
   /**
    * Calcule le montant total du panier.
    * 
@@ -93,7 +100,7 @@ public class Panier {
     var totalReducs = this.reducs.stream()
         .mapToDouble(l -> l.getMontantPanier(total))
         .sum();
-    return total - totalReducs;
+    return differencePositive(total, totalReducs);
   }
 
   /**
@@ -148,11 +155,11 @@ public class Panier {
     public double getPrixTotal() {
       var totalReducs = Panier.this.reducs.stream()
           .mapToDouble(r -> r.getMontantLigne(
-              this.produit.getReference(),
-              this.quantite,
-              this.produit.getPrix()))
+                this.produit.getReference(),
+                this.quantite,
+                this.produit.getPrix()))
           .sum();
-      return this.produit.getPrix() * this.quantite - totalReducs;
+      return differencePositive(this.produit.getPrix() * this.quantite, totalReducs);
     }
 
     /**
