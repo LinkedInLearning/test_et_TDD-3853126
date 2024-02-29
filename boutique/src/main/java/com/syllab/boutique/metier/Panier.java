@@ -105,6 +105,9 @@ public class Panier {
    * @return Montant total du panier.
    */
   public double getPrixTotal() {
+    if(estVide()) {
+      return 0;
+    }
     var total = this.lignes.values().stream()
         .mapToDouble(l -> l.getPrixTotal())
         .sum();
