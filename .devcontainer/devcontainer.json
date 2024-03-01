@@ -3,17 +3,16 @@
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
-			"VARIANT": "17",	//Can change to another of Java
+			"VARIANT": "17", //Can change to another of Java
 			"INSTALL_MAVEN": "true",
 			"INSTALL_GRADLE": "true",
 			"NODE_VERSION": "lts/*"
 		}
 	},
-
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
-			"settings": { 
+			"settings": {
 				"java.home": "/docker-java-home"
 			},
 			"extensions": [
@@ -23,8 +22,10 @@
 			]
 		}
 	},
+	"features": {
+		"ghcr.io/snebjorn/devcontainer-feature/chromium:latest": {}
+	},
 	"remoteUser": "vscode",
 	"onCreateCommand": "echo PS1='\"$ \"' >> ~/.bashrc" //Set Terminal Prompt to $
 }
-
 // DevContainer Reference: https://code.visualstudio.com/docs/remote/devcontainerjson-reference
