@@ -41,8 +41,8 @@ Pour résoudre ce problème :
 Retrouvez mes autres formations sur [LinkedIn Learning][lil-URL-trainer].
 
 [0]: # (Replace these placeholder URLs with actual course URLs)
-[lil-course-url]: https://www.linkedin.com
-[lil-thumbnail-url]: https:
+[lil-course-url]: https://www.linkedin.com/learning/java-tests-et-tdd
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4E0DAQEhvghtnwPWUQ/learning-public-crop_675_1200/0/1714725438492?e=2147483647&v=beta&t=cKbvUMJUCCkgl8Dqo8iOllM5gg3yTFlJSRMt-apvNW4
 [lil-URL-trainer]: https://www.linkedin.com/learning/instructors/sylvain-labasse
 
 [1]: # (End of FR-Instruction ###############################################################################################)
