@@ -1,10 +1,10 @@
-# Nom final de la formation
+# Java : Tests et TDD
 
-Ce dossier Repository est lié au cours `Nom final de la formation`. Le cours entier est disponible sur [LinkedIn Learning][lil-course-url].
+Ce dossier Repository est lié au cours `Java : Tests et TDD`. Le cours entier est disponible sur [LinkedIn Learning][lil-course-url].
 
 ![Nom final de la formation][lil-thumbnail-url] 
 
-DESCRIPTION DE LA FORMATION
+Dans cette formation pour développeurs de tous niveaux, Sylvain Labasse vous guide dans les tests et la méthode TDD (Test Driven Development) en Java. Apprenez JUnit, écrivez des tests efficaces, gérez les exceptions et validez les collections. Avec TDD, passez du test rouge au vert, personnalisez les libellés, réduisez la redondance et utilisez les tags. Simulez les dépendances avec Mockito, explorez les tests d'intégration, les tests d'API, les tests fonctionnels avec Selenium WebDriver, la méthode BDD et les tests de charge avec JMeter.
 
 La meilleure façon d'apprendre un langage est de l'utiliser dans la pratique. C'est pourquoi ce cours est intégré à GitHub Codespaces, un environnement de développement instantané « dans le nuage » qui offre toutes les fonctionnalités de votre IDE préféré sans nécessiter de configuration sur une machine locale. Avec Codespaces, vous pouvez vous exercer à partir de n'importe quelle machine, à tout moment, tout en utilisant un outil que vous êtes susceptible de rencontrer sur votre lieu de travail. Consultez la vidéo "Utilisation de Codespaces GitHub dans le cadre de ce cours" pour savoir comment démarrer.  
 
@@ -41,8 +41,8 @@ Pour résoudre ce problème :
 Retrouvez mes autres formations sur [LinkedIn Learning][lil-URL-trainer].
 
 [0]: # (Replace these placeholder URLs with actual course URLs)
-[lil-course-url]: https://www.linkedin.com
-[lil-thumbnail-url]: https:
+[lil-course-url]: https://www.linkedin.com/learning/java-tests-et-tdd
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4E0DAQEhvghtnwPWUQ/learning-public-crop_675_1200/0/1714725438492?e=2147483647&v=beta&t=cKbvUMJUCCkgl8Dqo8iOllM5gg3yTFlJSRMt-apvNW4
 [lil-URL-trainer]: https://www.linkedin.com/learning/instructors/sylvain-labasse
 
 [1]: # (End of FR-Instruction ###############################################################################################)
